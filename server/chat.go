@@ -40,7 +40,7 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 	msg := post.Message
 
 	if draft == nil {
-		if msg == "expense" {
+		if strings.ToLower(msg) == "expense" {
 			_ = p.sendDM(post.UserId, "Let's start the expense, shall we? If you change your mind, type ```reset``` and it will all be over.")
 			var userDefaults *UserDefaults
 			userDefaults, err = p.kvstore.GetUserDefaults(post.UserId)
@@ -72,9 +72,9 @@ func (p *Plugin) MessageHasBeenPosted(c *plugin.Context, post *model.Post) {
 			_ = p.sendDM(post.UserId, "**What is your IBAN?**")
 			return
 		}
-		_ = p.sendDM(post.UserId, "Type ```expense``` to start a new expense.")
+		_ = p.sendDM(post.UserId, "Hi! I'm ExpenseBot, I'll help you submit an expense. Type ```expense``` to start a new expense.")
 		return
-	} else if msg == "reset" {
+	} else if strings.ToLower(msg) == "reset" {
 		if err = p.kvstore.DeleteDraft(post.UserId); err != nil {
 			p.API.LogError("failed to delete draft", "err", err.Error())
 		}
